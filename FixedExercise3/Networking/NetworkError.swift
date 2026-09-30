@@ -1,6 +1,6 @@
 //
 //  NetworkError.swift
-//  FixedExercises
+//  FixedExercise3
 //
 //  Created by Lukas Brezina on 21.09.26.
 //
