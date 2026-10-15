@@ -151,7 +151,7 @@ struct ContentView: View {
         }
     }
     
-    private func errorMessage(error: NetworkError) -> String {
+    private func errorMessage(error: NetworkingError) -> String {
         switch error {
         case .internalServerError: "Internal Server Error"
         case .serializationError: "Serialization Error"

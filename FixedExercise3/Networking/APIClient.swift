@@ -17,10 +17,12 @@ class APIClient {
     
     func login(username: String,
                password: String,
-               completionHandler: @escaping (User?, NetworkError?) -> Void) {
+               completionHandler: @escaping (User?, NetworkingError?) -> Void) {
         
         guard let url = URL(string: apiUrl) else {
-            completionHandler(nil, .invalidApiUrl)
+            DispatchQueue.main.async {
+                completionHandler(nil, .invalidApiUrl)
+            }
             return
         }
         
@@ -37,13 +39,15 @@ class APIClient {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            completionHandler(nil, .serializationError)
+            DispatchQueue.main.async {
+                completionHandler(nil, .serializationError)
+            }
             return
         }
         
         let dataTask = session.dataTask(with: request) { data, urlResponse, error in
             var user: User?
-            var networkError: NetworkError?
+            var networkError: NetworkingError?
 
             if let error {
                 networkError = .noNetworkConnection(error.localizedDescription)
@@ -57,7 +61,7 @@ class APIClient {
                 } else {
                     do {
                         let responseError = try JSONDecoder().decode(ResponseError.self, from: data)
-                        networkError = responseError.getNetworkError(statusCode: http.statusCode)
+                        networkError = responseError.getNetworkingError(statusCode: http.statusCode)
                     } catch {
                         networkError = .httpError(statusCode: http.statusCode, message: nil)
                     }
